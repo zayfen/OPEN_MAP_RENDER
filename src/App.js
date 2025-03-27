@@ -15,6 +15,7 @@ import {
 import useImage from "use-image";
 
 const transformedMapData = transformRawMapData(RawMapDataFromBackend.data);
+
 function App() {
   const [mapData, setMapData] = useState(transformedMapData);
   const [robotPos, setRobotPos] = useState({ x: 0, y: 0 });

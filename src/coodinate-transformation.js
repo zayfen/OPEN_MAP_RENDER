@@ -62,3 +62,4 @@ export function convertMapImageKonva(mapImageMeta, resolution) {
   }
 }
 
+

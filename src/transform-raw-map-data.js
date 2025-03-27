@@ -18,7 +18,7 @@ export function transformRawMapData(rawMapData) {
 
   elementList.forEach((element) => {
     element.vector_list = toKonvaVector(element.vector_list, resolution);
-    element.clean_path_list = toKonvaVector(element.clean_path_list, resolution);
+    element.clean_path_list = element.clean_path_list.map(path => toKonvaVector(path, resolution));
   });
 
   zoneList.forEach((zone) => {
