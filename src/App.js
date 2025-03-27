@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import "./styles.css";
-import TestMapData from "./test-map-data.json";
-
+import RawMapDataFromBackend from "./raw-map-data-from-backend.json";
+import { transformRawMapData } from "./transform-raw-map-data";
 import {
   Stage,
   Layer,
@@ -14,8 +14,9 @@ import {
 } from "react-konva";
 import useImage from "use-image";
 
+const transformedMapData = transformRawMapData(RawMapDataFromBackend.data);
 function App() {
-  const [mapData, setMapData] = useState(TestMapData);
+  const [mapData, setMapData] = useState(transformedMapData);
   const [robotPos, setRobotPos] = useState({ x: 0, y: 0 });
 
   const mapImageUrl = useMemo(() => {
@@ -23,7 +24,7 @@ function App() {
       return "";
     }
 
-    return mapData.data.url;
+    return mapData.mapImage.url;
   }, [mapData]);
 
   const [mapImage] = useImage(mapImageUrl);
@@ -32,22 +33,15 @@ function App() {
     if (!mapData) {
       return [0, 0];
     }
-    return mapData.data.origin_list;
+    return [mapData.mapImage.x, mapData.mapImage.y];
   }, [mapData]);
 
-  const scaleRatio = useMemo(() => {
-    if (!mapData) {
-      return 1;
-    }
-
-    return mapData.data.scale_ratio;
-  }, [mapData]);
 
   const [translateX, translateY] = useMemo(() => {
     if (!mapData) {
       return [0, 0];
     }
-    return [mapData.data.canvas_translate_x, mapData.data.canvas_translate_y];
+    return [mapData.mapImage.translate.x, mapData.mapImage.translate.y];
   }, [mapData]);
 
   function handleMapDataChange(evt) {
@@ -56,7 +50,7 @@ function App() {
     try {
       const mapDataJson = JSON.parse(mapDataText.trim());
 
-      setMapData(mapDataJson);
+      setMapData(transformRawMapData(mapDataJson.data));
     } catch (error) {
       console.error("请输入合法的JSON字符串");
     }
@@ -101,12 +95,12 @@ function App() {
             <Group
               x={translateX}
               y={translateY}
-              scaleX={scaleRatio}
-              scaleY={scaleRatio}
+              scaleX={1}
+              scaleY={1}
             >
               <Image image={mapImage} x={imageOriginX} y={imageOriginY} />
 
-              {mapData.data.element_list.map((item, index) => {
+              {mapData.elementList.map((item, index) => {
                 if (item.type === "area" || item.type === "edge") {
                   return (
                     <>
@@ -156,7 +150,7 @@ function App() {
                 }
               })}
 
-              {mapData.data.zone_list.map((zone, index) => {
+              {mapData.zoneList.map((zone, index) => {
                 return (
                   <Line
                     key={index + "_zone"}
