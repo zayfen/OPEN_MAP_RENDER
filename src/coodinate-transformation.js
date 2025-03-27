@@ -42,7 +42,7 @@ export function toKonvaVector(originVec, resolution) {
  */
 export function convertMapImageKonva(mapImageMeta, resolution) {
   const { origin, width: imagePxWidth, height: imagePxHeight } = mapImageMeta; 
-  const imageVec = toKonvaVector([origin.x, origin.y], resolution);
+  const imageVec = toKonvaVector(origin, resolution);
   imageVec[1] = imageVec[1] - imagePxHeight;
   
   const topLeftMapImage = {

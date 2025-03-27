@@ -27,9 +27,7 @@ export function transformRawMapData(rawMapData) {
       return node;
     });
   })
-  
   const mapImageMeta = convertMapImageKonva({ origin: mapImageOrigin, width: mapImageWidth, height: mapImageHeight }, resolution);
-
   return {
     mapName,
     mapImage: {
